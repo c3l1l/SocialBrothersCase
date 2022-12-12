@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Jwt Login Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script>
+        function loginAJAX() {
+            let xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.status == 200 && xhr.readyState== 4) {
+                   
+                    localStorage.setItem("token", "Bearer " + xhr.responseText); 
+                    clearDivContent();
+                    document.getElementById("tokenList").append("Token:"+xhr.responseText);              
+                }
+                else if(xhr.status==401){
+                    clearDivContent();
+                     document.getElementById("tokenList").append("401 unauthorized...");
+                 }
+            }
+            xhr.open("POST", "http://localhost:28937/api/post/control", true);
+            //xhr.open("POST", "http://localhost:5085/api/post/control", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+           // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader('Access-Control-Allow-Origin', "http://localhost:28937/api/post/");
+
+            let userName = document.getElementById("user").value;
+            let pwd = document.getElementById("password").value;
+            let user = { name:userName, password:pwd};
+            xhr.send(JSON.stringify(user));
+           
+        }
+        function getDataAJAX() {
+            let xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.status == 200 && xhr.readyState == 4) {
+                    
+                }
+            }
+
+            xhr.open("GET", "http://localhost:28937/api/post/", true);
+           // xhr.open("GET", "http://localhost:5085/api/post/", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            let token = localStorage.getItem("token");
+            xhr.setRequestHeader("Authorization", token);
+            xhr.send();
+        }
+        function clearDivContent(){
+            var div = document.getElementById("tokenList");              
+            while(div.firstChild)
+                div.removeChild(div.firstChild);
+        }
+    </script>
+</head>
+<body>
+   <!--  <form action="/" method="post">
+        <input type="text" id="user" />
+        <input type="password" id="password" />
+    </form>
+    <button onclick="loginAJAX()">Login</button>
+    <button onclick="getDataAJAX()">GetData</button> -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-6 pt-5">
+                <form>
+              <div class="mb-3">
+                <label for="user" class="form-label">User Name</label>
+                <input type="text" class="form-control" id="user" aria-describedby="">
+                <div id="emailHelp" class="form-text">You need to get Jwt token to add new Post.</div>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password">
+              </div>              
+                </form>
+              <button class="btn btn-primary" onclick="loginAJAX() ">Get token</button>
+             
+              <a class="btn btn-success" id="homebtn" href="index.html">Back to Home</a>
+            </div>
+        </div>
+         <div class="row justify-content-center ">
+            <div class="col-6 border mt-4 overflow-auto" style="height: 100px;" id="tokenList"></div>
+         </div>
+
+    </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+ <script src="https://kit.fontawesome.com/8303afc6e7.js" crossorigin="anonymous"></script>
+ <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+</body>
+</html>
